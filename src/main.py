@@ -14,6 +14,7 @@ config["policy_model"]["fcnet_hiddens"] = [32, 32]
 config["initial_alpha"] = 1.0
 config["optimization"]["entropy_learning_rate"] = 0.0
 config["num_gpus"] = 0
+config["gamma"] = 1.0
 config["num_workers"] = 16-1
 
 
