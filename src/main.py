@@ -20,7 +20,7 @@ config["num_workers"] = 16-1
 
 tune.run(
     "SAC",
-    stop={"episode_reward_mean": -1},
+    stop={"episode_reward_mean": -0.01},
     config=config,
 )
 ray.shutdown()
