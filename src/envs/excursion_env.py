@@ -37,7 +37,7 @@ class ExcursionEnv(gym.Env):
 
     def step(self, action):
         assert action in [0, 1], action
-        step_change = 1.0 if action == 0 else 0.0
+        step_change = 1.0 if action == 0 else -1.0
         
         reward = self._reward_calculation(self.x, self.t, self.x + step_change)
 

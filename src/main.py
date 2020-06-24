@@ -3,6 +3,7 @@ from ray import tune
 import ray.rllib.agents.sac as sac
 from ray.tune.logger import pretty_print
 from envs.excursion_env import ExcursionEnv
+from training.additional_callbacks import EntropyCallbacks
 
 ray.init()
 config = sac.DEFAULT_CONFIG.copy()
@@ -16,6 +17,7 @@ config["optimization"]["entropy_learning_rate"] = 0.0
 config["num_gpus"] = 0
 config["gamma"] = 1.0
 config["num_workers"] = 16-1
+config["callbacks"] = EntropyCallbacks
 
 
 tune.run(
