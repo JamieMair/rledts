@@ -33,13 +33,4 @@ class EntropyCallbacks(DefaultCallbacks):
                 log_p_action = policy.compute_log_likelihoods(actions=np.array([last_action]), obs_batch=observation)
 
                 episode.custom_metrics["episode_entropy"] -= log_p_action
-            
-            
 
-    def on_postprocess_trajectory(
-            self, worker: RolloutWorker, episode: MultiAgentEpisode,
-            agent_id: str, policy_id: str, policies: Dict[str, Policy],
-            postprocessed_batch: SampleBatch,
-            original_batches: Dict[str, SampleBatch], **kwargs):
-        
-        pass
