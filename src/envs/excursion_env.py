@@ -13,10 +13,14 @@ class ExcursionEnv(gym.Env):
 
         self.x = 0.0
         self.t = 0.0
+        self.below_zero = False
+        self.success = False
 
     def reset(self):
         self.x = 0.0
         self.t = 0.0
+        self.below_zero = False
+        self.success = False
 
         return self._observation_calculation()
 
@@ -40,12 +44,24 @@ class ExcursionEnv(gym.Env):
         step_change = 1.0 if action == 0 else -1.0
         
         reward = self._reward_calculation(self.x, self.t, self.x + step_change)
-
+        
+        # Todo : work out success
         self.x += step_change
         self.t += 1.0
 
+        self.below_zero = self.below_zero and self.x < 0
+        
         done = self.t >= self.T
 
-        return self._observation_calculation(), reward, done, {}
+
+        if done:
+            if not self.below_zero and self.x == 0:
+                self.success = True
+            metrics = {"success": int(self.success)}
+        else:
+            metrics = {}
+        
+
+        return self._observation_calculation(), reward, done, metrics
         
 
