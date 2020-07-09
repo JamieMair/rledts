@@ -37,4 +37,7 @@ class EntropyCallbacks(DefaultCallbacks):
     def on_episode_end(self, worker: RolloutWorker, base_env: BaseEnv,
             policies: Dict[str, Policy], episode: MultiAgentEpisode):
         episode.custom_metrics["success"] = episode.last_info_for()["success"]
+        episode.custom_metrics["hit"] = episode.last_info_for()["hit"]
+    
+
     
