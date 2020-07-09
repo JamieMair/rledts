@@ -31,11 +31,12 @@ def stopper(trial_id, result):
     
     return result["episode_reward_mean"] > -0.01 and result["custom_metrics"]["success_mean"] > 0.95
 
-tune.run(
+results = tune.run(
     "SAC",
     stop=stopper,
     config=config,
     checkpoint_freq=25,
     checkpoint_at_end=True
 )
+print(results)
 ray.shutdown()
