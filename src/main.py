@@ -19,10 +19,15 @@ config["gamma"] = 1.0
 config["num_workers"] = 16-1
 config["callbacks"] = EntropyCallbacks
 
+def stopper(trial_id, result):
+    if (result["training_iteration"] < 10000):
+        return False
+    
+    return result["episode_reward_mean"] > -0.01 and result["custom_metrics"]["success_mean"] > 0.95
 
 tune.run(
     "SAC",
-    stop={"episode_reward_mean": -0.01},
+    stop=stopper,
     config=config,
     checkpoint_freq=25,
     checkpoint_at_end=True
