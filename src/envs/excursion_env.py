@@ -57,7 +57,7 @@ class ExcursionEnv(gym.Env):
         if done:
             if not self.below_zero and self.x == 0:
                 self.success = True
-            metrics = {"success": int(self.success)}
+            metrics = {"success": int(self.success), "hit": int(self.x==0)}
         else:
             metrics = {}
         
