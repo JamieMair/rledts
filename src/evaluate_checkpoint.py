@@ -64,8 +64,8 @@ model_directory = os.path.join(checkpoint_directory, "model")
 
 # policy: SACTFPolicy = trainer._policy
 
-min_samples = 1000
-precision = 1e-2
+min_samples = 50
+precision = 0.002
 precision_squared = precision*precision
 policy_dict = {}
 start_time = time.time()
