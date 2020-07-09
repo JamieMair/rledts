@@ -24,5 +24,7 @@ tune.run(
     "SAC",
     stop={"episode_reward_mean": -0.01},
     config=config,
+    checkpoint_freq=25,
+    checkpoint_at_end=True
 )
 ray.shutdown()
