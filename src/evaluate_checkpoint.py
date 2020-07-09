@@ -8,6 +8,7 @@ import json
 import tensorflow as tf
 import numpy as np
 import ray
+import time
 
 parser = argparse.ArgumentParser("Excursion Evaluator")
 
@@ -67,37 +68,42 @@ min_samples = 1000
 precision = 1e-2
 precision_squared = precision*precision
 policy_dict = {}
-for t in range(config["env_config"]["excursion_time"]):
+start_time = time.time()
+T = config["env_config"]["excursion_time"]
+for t in range(T):
     for x in range(-t,t+1, 2):
         observation = [x, t]
-
         count_up = 0
         count_down = 0
 
         for i in range(min_samples):
             action = trainer.compute_action(observation)
             if action == 0:
-                count_up += 1;
+                count_up += 1
             else:
-                count_down += 1;
+                count_down += 1
         while True:
 
             for i in range(10):
                 action = trainer.compute_action(observation)
                 if action == 0:
-                    count_up += 1;
+                    count_up += 1
                 else:
-                    count_down += 1;
+                    count_down += 1
 
             prob_sample = count_up / (count_up + count_down)
 
             uncertainty_error_squared =  prob_sample*(1-prob_sample)/(count_down+count_up)
 
             if uncertainty_error_squared < precision_squared:
-                break;
+                break
 
         policy_dict[(x,t)] = prob_sample
-    print(f"Finished time {t}")
+    current_time = time.time()
+    elapsed_time = current_time-start_time
+    elapsed_proportion = ((t+1)*(t+2)/2)/(T*(T+1)/2)
+    estimated_time_to_complete = elapsed_time/elapsed_proportion
+    print(f"Finished time {t}\tETC in: {(estimated_time_to_complete-elapsed_time):.0f}s.")
 
 with open("results.csv", 'w') as writer:
     writer.write("x,t,policy_up,policy_down\n")
