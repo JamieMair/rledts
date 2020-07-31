@@ -1,16 +1,15 @@
 import sys
 import os
 import pickle
+import time
 import numpy as np
 import numpy.random
 from scipy import linalg
 from matplotlib import pyplot
 source_path = os.path.join("source/")
 sys.path.insert(0,source_path)
-import ring_tabular
 import ring_linear
 import ring_model
-import ring_exact
 
 ring_length = 1000
 initial_bias = -0.25
@@ -28,16 +27,18 @@ original_dynamics = model.original_dynamics()
 dynamics_parameters = dict(
 	model = model, 
 	reward_learning_rate = 0.0005,
+	entropy_learning_rate = 0.00005,
+	current_learning_rate = 0.00005,
 	value_learning_rate = 0.03,
 	dynamic_learning_rate = 0.01,
 	weight_number = 4,
 	discount = 0.99,
 )
-dynamics = ring_linear.ring_dynamics_fourier(dynamics_parameters)
+dynamics = ring_linear.ring_dynamics_fourier_discounted(dynamics_parameters)
 #dynamics.initialize(10000)
 
-bias_step = 0.05
-biases = [initial_bias + bias_step*i for i in range(21)]
+bias_step = 0.01
+biases = [initial_bias + bias_step*i for i in range(101)]
 scgf = []
 entropy = []
 current = []
@@ -45,9 +46,14 @@ potentials = []
 values = []
 stat_states = []
 
+train_steps = 10000
+eval_steps = 10000
+
+past_time = time.time()
 for bias in biases:
 	dynamics.model.bias = bias
-	dynamics.train(100000)#, False)
+	dynamics.train(train_steps)
+	dynamics.evaluate(eval_steps)
 	scgf.append(dynamics.average_reward)
 	entropy.append(dynamics.entropy)
 	current.append(dynamics.current)
@@ -56,6 +62,7 @@ for bias in biases:
 	stat_state = dynamics.stationary_state()
 	values.append(vals  - np.dot(vals, stat_state))
 	stat_states.append(stat_state)
+print(time.time() - past_time)
 
 save = False
 if save:

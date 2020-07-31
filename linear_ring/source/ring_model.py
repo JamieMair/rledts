@@ -37,17 +37,6 @@ class ring_model_periodic(object):
 			probability = 1/(np.exp(potential) + 1)
 		return probability
 
-	def original_transition_query(self, current_state, next_state):
-		potential = (self.scale*np.sin(2*np.pi*current_state/self.ring_length)
-					 + self.constant)
-		if current_state == (next_state-1) % self.ring_length:
-			probability = np.exp(potential)/(np.exp(potential) + 1)
-		elif current_state == (next_state+1) % self.ring_length:
-			probability = 1/(np.exp(potential) + 1)
-		else:
-			probability = 0
-		return probability
-
 	def reward(self, transition_probability):
 		if self.current_state == (self.next_state-1) % self.ring_length:
 			bias_term = -self.bias
@@ -55,13 +44,6 @@ class ring_model_periodic(object):
 			bias_term = self.bias
 		original_probability = self.original_transition_probability()
 		return bias_term - np.log(transition_probability / original_probability)
-
-	def transition_bias(self, current_state, next_state):
-		if current_state == (next_state-1) % self.ring_length:
-			bias_term = -self.bias
-		else:
-			bias_term = self.bias
-		return np.exp(bias_term)
 
 	def original_dynamics(self):
 		probabilities = np.zeros((2, self.ring_length))
