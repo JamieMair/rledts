@@ -32,6 +32,7 @@ class environment(object):
 		return self.state, self._reward(), self.terminal_state, None
 
 	def kl_regularization(self, state, action, action_probability):
+		"""Returns the KL regularization for the specified transition."""
 		return -math.log(action_probability/0.5)
 
 	def reset(self):
@@ -42,6 +43,7 @@ class environment(object):
 		return self.state
 
 class analysis(object):
+	"""Gathers statistics for the success and trajectory ensemble entropy."""
 	
 	def __init__(self, success_learning_rate, entropy_learning_rate):
 		self.successes = []
@@ -54,15 +56,18 @@ class analysis(object):
 		self.entropy = 0
 
 	def per_step(self, past_state, action, current_state, action_probability):
+		"""Updates trajectory success boolean and entropy after current step."""
 		if current_state[0] < 0:
 			self.success = 0
 		self.entropy -= math.log(action_probability)
 
 	def reset(self):
+		"""Resets entropy and success for next trajectory."""
 		self.success = 1
 		self.entropy = 0
 	
 	def per_episode(self, state):
+		"""Finishes calculations for the trajectory and iterates average estimates."""
 		if state[0] != 0:
 			self.success = 0
 		self.average_success += self.success_learning_rate*(self.success 
@@ -74,10 +79,12 @@ class analysis(object):
 		self.entropies.append(self.average_entropy)
 
 	def evaluation_reset(self):
+		"""Resets averages prior to evaluation."""
 		self.average_success = 0
 		self.average_entropy = 0
 
 	def per_sample(self, state, sample):
+		"""Iteratively calculates means of entropy and success post training."""
 		if state[0] != 0:
 			self.success = 0
 		self.average_success += (self.success - self.average_success)/sample
@@ -85,6 +92,7 @@ class analysis(object):
 		self.reset()
 
 class gauge(object):
+	"""Used to calculate exact results for comparison."""
 
 	def __init__(self, parameters):
 		self.trajectory_length = parameters['trajectory_length']
@@ -93,6 +101,7 @@ class gauge(object):
 		self._construct_gauge()
 
 	def _bias(self, current_state):
+		"""Calculates the weight of transitions to the current state."""
 		if current_state[0] < self.trajectory_length:
 			reward = -self.positivity_bias * abs(current_state[0] 
 												 - self.trajectory_length)
@@ -103,6 +112,7 @@ class gauge(object):
 		return math.exp(reward)
 
 	def _construct_gauge(self):
+		"""Iteratively constructs the gauge transformations backwards in time."""
 		self.gauge = np.zeros((self.trajectory_length*2 + 1, 
 							   self.trajectory_length + 1),
 							  dtype = np.float32)
@@ -124,12 +134,14 @@ class gauge(object):
 		return self.gauge
 
 	def update_model(self, new_parameters):
+		"""Updates the gauge transformations for new parameters."""
 		self.trajectory_length = new_parameters['trajectory_length']
 		self.positivity_bias = new_parameters['positivity_bias']
 		self.target_bias = new_parameters['target_bias']
 		self._construct_gauge()
 
 def state_probabilities(up_probabilities, trajectory_length):
+	"""Calculates time dependent state probabilities for given dynamics."""
 		trajectory_length = trajectory_length
 		probabilities = np.zeros((trajectory_length*2 + 1, trajectory_length + 1),
 								 dtype = np.float32)
