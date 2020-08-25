@@ -125,3 +125,7 @@ dmypy.json
 .pyre/
 
 .vscode/
+
+# Data/plotting
+data/
+*_plot.py
