@@ -7,18 +7,17 @@ from matplotlib import cm
 import matplotlib.colors as colors
 from matplotlib.colors import LogNorm
 
-scgf = np.load("scgf.npy")
-entropy = np.load("entropy.npy")
-current = np.load("current.npy")
-scgf_discount = np.load("scgf_discount.npy")
-entropy_discount = np.load("entropy_discount.npy")
-current_discount = np.load("current_discount.npy")
-scgf_exact = np.load("scgf_exact.npy")
-stat_states = np.load("stationary_state.npy")
-potentials = np.load("potential.npy")
-values = np.load("values.npy")
+scgf = np.load("data/run_3/scgf.npy")
+entropy = np.load("data/run_3/entropy.npy")
+current = np.load("data/run_3/current.npy")
+scgf_discount = np.load("data/run_1/scgf.npy")
+entropy_discount = np.load("data/run_1/entropy.npy")
+current_discount = np.load("data/run_1/current.npy")
+stat_states = np.load("data/run_3/stationary_state.npy")
+potentials = np.load("data/run_3/potential.npy")
+values = np.load("data/run_3/values.npy")
 
-scgf_exact = np.loadtxt("L499.txt").T[1]
+scgf_exact = np.loadtxt("data/L499.txt").T[1]
 
 initial_bias = -0.25
 bias_step = 0.01
@@ -82,7 +81,7 @@ ax = plt.axes((
 plt.plot([-0.25, 0.75], [0, 0], c = '0.2', lw = 1, ls = ':')
 plt.plot(biases, scgf_discount, c = color2, lw = 2.5)
 plt.plot(biases, scgf, c = color3, lw = 2.5)
-plt.plot(biases, scgf_exact, c = '0.5', lw = 2.5, ls = '--')
+plt.plot(biases, scgf_exact, c = '0.8', lw = 1.5, ls = '--')
 #plt.xticks([-0.25, 0.75])
 plt.yticks([0.0, 0.2])
 plt.ylabel(r'$\bar{r}_\theta(s)$', labelpad = -20)
