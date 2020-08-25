@@ -7,6 +7,7 @@ from scipy import linalg
 import approximations
 
 class ring_dynamics_fourier(object):
+	"""Runs the differential actor-critic algorithm with fourier modes."""
 
 	def __init__(self, parameters):
 		self.model = parameters['model']
@@ -26,6 +27,7 @@ class ring_dynamics_fourier(object):
 		self.current_features = np.zeros((parameters['weight_number']))
 
 	def train(self, steps):
+		"""Trains the approximations for then specified number of steps."""
 		self.current_features = self.value_approximation.features(
 			self.model.current_state)
 		while self.time < steps:
@@ -36,6 +38,7 @@ class ring_dynamics_fourier(object):
 		self.time = 0
 
 	def _transition(self):
+		"""Transitions the environment state and outputs update info."""
 		potential_gradient = self.potential_approximation.features(
 			self.model.current_state)
 		potential = self.potential_approximation.weights @ potential_gradient
@@ -52,6 +55,7 @@ class ring_dynamics_fourier(object):
 			return 1 - right_probability, transition_gradient
 
 	def _update(self, transition_probability, transition_gradient):
+		"""Calculates the new weights of the approximations."""
 		reward = self.model.reward(transition_probability)
 		next_features = self.value_approximation.features(self.model.next_state)
 		current_value = self.current_features @ self.value_approximation.weights
@@ -70,6 +74,7 @@ class ring_dynamics_fourier(object):
 		self.current_features = next_features
 
 	def _eval_update(self, transition_probability):
+		"""Processes transition information for post training evaluation."""
 		reward = self.model.reward(transition_probability)
 		self.average_reward += (reward - self.average_reward) / self.time
 		self.entropy += (-math.log(transition_probability) - self.entropy) / self.time
@@ -78,6 +83,7 @@ class ring_dynamics_fourier(object):
 		self.current += (current - self.current) / self.time
 
 	def evaluate(self, steps):
+		"""Runs a trajectory without training to evaluate the dynamics."""
 		self.average_reward = 0
 		self.entropy = 0
 		self.current = 0
@@ -89,6 +95,7 @@ class ring_dynamics_fourier(object):
 		self.time = 0
 
 	def potential(self):
+		"""Calculates and outputs the potential defining transition probabilities."""
 		potential = np.zeros((self.model.ring_length))
 		for state in range(self.model.ring_length):
 			potential_gradient = self.potential_approximation.features(state)
@@ -96,6 +103,7 @@ class ring_dynamics_fourier(object):
 		return potential
 
 	def dynamics(self):
+		"""Calculates and outputs the transition probabilities."""
 		probabilities = np.zeros((2, self.model.ring_length))
 		for state in range(self.model.ring_length):
 			potential_gradient = self.potential_approximation.features(state)
@@ -106,6 +114,7 @@ class ring_dynamics_fourier(object):
 		return probabilities
 
 	def values(self):
+		"""Outputs the value function."""
 		values = np.zeros((self.model.ring_length))
 		for state in range(self.model.ring_length):
 			values[state] = (self.value_approximation.features(state) 
@@ -113,6 +122,7 @@ class ring_dynamics_fourier(object):
 		return values
 
 	def stationary_state(self):
+		"""Calculates and outputs the stationary state of the dynamics."""
 		probabilities = self.dynamics()
 		master_operator = np.zeros((self.model.ring_length, self.model.ring_length), dtype = np.complex64)
 		for position in range(self.model.ring_length):
@@ -128,12 +138,14 @@ class ring_dynamics_fourier(object):
 
 
 class ring_dynamics_fourier_discounted(ring_dynamics_fourier):
+	"""Runs the discounted actor-critic algorithm with fourier modes."""
 
 	def __init__(self, parameters):
 		super().__init__(parameters)
 		self.discount = parameters['discount']
 
 	def _update(self, transition_probability, transition_gradient):
+		"""Calculates the new weights of the approximations."""
 		reward = self.model.reward(transition_probability)
 		next_features = self.value_approximation.features(self.model.next_state)
 		current_value = self.current_features @ self.value_approximation.weights

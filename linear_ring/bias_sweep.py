@@ -22,7 +22,7 @@ model_parameters = dict(
 	scale = scale,
 	constant = constant,
 )
-model = ring_model.ring_model_periodic(model_parameters)
+model = ring_model.ring_model(model_parameters)
 original_dynamics = model.original_dynamics()
 dynamics_parameters = dict(
 	model = model, 
@@ -39,7 +39,6 @@ if discounted:
 	dynamics = ring_linear.ring_dynamics_fourier_discounted(dynamics_parameters)
 else:
 	dynamics = ring_linear.ring_dynamics_fourier(dynamics_parameters)
-#dynamics.initialize(10000)
 
 bias_step = 0.01
 bias_steps = 101

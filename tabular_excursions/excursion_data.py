@@ -9,7 +9,7 @@ import algorithms # pylint: disable = import-error
 import tables # pylint: disable = import-error
 
 environment_parameters = dict(
-	trajectory_length = 1000, 
+	trajectory_length = 100, 
 	positivity_bias = 5,
 	target_bias = 7,
 )
@@ -75,7 +75,7 @@ initial_samples = agent1.samples(50)
 min_y = np.min(np.array(initial_samples)[:,:,0]) - 1
 max_y = np.max(np.array(initial_samples)[:,:,0]) + 1
 
-episodes = 200000
+episodes = 20000
 agent1.train(episodes)
 agent2.train(episodes)
 agent3.train(episodes)

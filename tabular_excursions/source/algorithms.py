@@ -3,24 +3,39 @@ import numpy as np
 
 
 class default_analysis(object):
+	"""A placeholder class for analysis conducted during training.
+
+	To be overwritten by specialized code for the problem being
+	studied.
+	"""
 	
 	def per_step(self, past_state, action, current_state, action_probability):
+		"""Placeholder for the calculations conducted at each episode step."""
 		pass
 
 	def reset(self):
+		"""Placeholder for resetting state after each episode."""
 		pass
 
 	def per_episode(self, state):
+		"""Placeholder for calculations conducted after each episode."""
 		pass
 
 	def evaluation_reset(self):
+		"""Alternative reset for post-training evaluation."""
 		pass
 
 	def per_sample(self, state, sample):
+		"""Alternative for per episode calculations during evaluation."""
 		pass
 
 class episodic_algorithm(object):
-	"""A wrapper for episodic RL algorithms."""
+	"""A wrapper for episodic RL algorithms.
+	
+	Lays out the general structure of finite-time RL algorithms, with
+	placeholder functions to be overwritten as required by inheriting 
+	classes.
+	"""
 
 	def __init__(self, parameters):
 		self.environment = parameters['environment']
@@ -44,6 +59,7 @@ class episodic_algorithm(object):
 			self.analyser = default_analysis()
 	
 	def _reward(self):
+		"""Placeholder function which can be overwritten to modify the reward."""
 		return self.reward
 
 	def _transition(self):
@@ -171,6 +187,7 @@ class max_entropy_monte_carlo_returns(monte_carlo_returns):
 		self.entropy_scaling = entropy_scaling
 
 	def _reward(self):
+		"""Adds entropy regularization to the reward."""
 		return self.reward - self.entropy_scaling * math.log(self.action_probability)
 
 
@@ -178,6 +195,7 @@ class kl_regularized_monte_carlo_returns(monte_carlo_returns):
 	"""Adds entropy to a purely return based policy gradient algorithm."""
 
 	def _reward(self):
+		"""Adds Kullback-Leibler regularization to the reward."""
 		kl_reg = self.environment.kl_regularization(
 			self.past_state, self.action, self.action_probability)
 		return self.reward + kl_reg
@@ -220,6 +238,7 @@ class max_entropy_monte_carlo_value_baseline(monte_carlo_value_baseline):
 		self.entropy_scaling = entropy_scaling
 
 	def _reward(self):
+		"""Adds entropy regularization to the reward."""
 		return self.reward - self.entropy_scaling * math.log(self.action_probability)
 
 
@@ -227,6 +246,7 @@ class kl_regularized_monte_carlo_value_baseline(monte_carlo_value_baseline):
 	"""Adds entropy to a purely return based policy gradient algorithm."""
 
 	def _reward(self):
+		"""Adds Kullback-Leibler regularization to the reward."""
 		kl_reg = self.environment.kl_regularization(
 			self.past_state, self.action, self.action_probability)
 		return self.reward + kl_reg
@@ -264,6 +284,7 @@ class max_entropy_actor_critic(actor_critic):
 		self.entropy_scaling = entropy_scaling
 
 	def _reward(self):
+		"""Adds entropy regularization to the reward."""
 		return self.reward - self.entropy_scaling * math.log(self.action_probability)
 
 
@@ -271,6 +292,7 @@ class kl_regularized_actor_critic(actor_critic):
 	"""Uses the value as a baseline and an estimate of future returns."""
 
 	def _reward(self):
+		"""Adds Kullback-Leibler regularization to the reward."""
 		kl_reg = self.environment.kl_regularization(
 			self.past_state, self.action, self.action_probability)
 		return self.reward + kl_reg

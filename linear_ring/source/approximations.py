@@ -6,6 +6,7 @@ from scipy import linalg
 
 
 class fourier_basis(object):
+	"""Stores a fourier basis expansion and calculates its features."""
 
 	def __init__(self, modes, ring_length, initial_weights = 'random'):
 		self.modes = modes
@@ -16,6 +17,7 @@ class fourier_basis(object):
 		self.ring_length = ring_length
 
 	def features(self, state):
+		"""Outputs the feature vector for the input state."""
 		feature_values = np.array([1])
 		trig_arguments = ((2 * np.pi * state * np.arange(1, self.modes + 1))
 						  / self.ring_length)
