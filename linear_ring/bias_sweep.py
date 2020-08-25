@@ -69,7 +69,7 @@ for bias in biases:
 	stat_states.append(stat_state)
 print(time.time() - past_time)
 
-save = True
+save = False
 run = 3
 if save:
 	if not os.path.isdir("data/run_%s"%(run)):
