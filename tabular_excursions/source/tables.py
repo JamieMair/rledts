@@ -4,7 +4,8 @@ import numpy.random
 
 
 class identity_preprocessor(object):
-	"""Placeholder generic state processing into a tabular index."""
+	"""Placeholder for generic state processing into a tabular index."""
+
 	def process(self, state):
 		return tuple(state)
 

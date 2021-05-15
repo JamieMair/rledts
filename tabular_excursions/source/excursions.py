@@ -142,18 +142,18 @@ class gauge(object):
 
 def state_probabilities(up_probabilities, trajectory_length):
 	"""Calculates time dependent state probabilities for given dynamics."""
-		trajectory_length = trajectory_length
-		probabilities = np.zeros((trajectory_length*2 + 1, trajectory_length + 1),
-								 dtype = np.float32)
-		probabilities[0][0] = 1
-		for time in range(trajectory_length):
-			for state in range(trajectory_length*2 + 1):
-				probabilities[(state + 1)%(trajectory_length*2 + 1)][time + 1] += (
-					probabilities[state][time] * up_probabilities[state][time])
-				probabilities[state - 1][time + 1] += (probabilities[state][time]
-													  * (1-up_probabilities[state][time]))
-		probabilities = np.concatenate(
-			(probabilities[trajectory_length+1:
-						   trajectory_length*2+1,:],
-			 probabilities[0:trajectory_length+1,:]), axis = 0)
-		return probabilities
+	trajectory_length = trajectory_length
+	probabilities = np.zeros((trajectory_length*2 + 1, trajectory_length + 1),
+								dtype = np.float32)
+	probabilities[0][0] = 1
+	for time in range(trajectory_length):
+		for state in range(trajectory_length*2 + 1):
+			probabilities[(state + 1)%(trajectory_length*2 + 1)][time + 1] += (
+				probabilities[state][time] * up_probabilities[state][time])
+			probabilities[state - 1][time + 1] += (probabilities[state][time]
+													* (1-up_probabilities[state][time]))
+	probabilities = np.concatenate(
+		(probabilities[trajectory_length+1:
+						trajectory_length*2+1,:],
+			probabilities[0:trajectory_length+1,:]), axis = 0)
+	return probabilities
