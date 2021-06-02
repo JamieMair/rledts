@@ -80,7 +80,7 @@ tensorflow==2.2.0
 tensorflow-estimator==2.2.0
 termcolor==1.1.0
 toml==0.10.1
-urllib3==1.25.9
+urllib3==1.26.5
 wandb==0.9.1
 watchdog==0.10.2
 Werkzeug==1.0.1
