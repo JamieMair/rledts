@@ -47,7 +47,7 @@ opencv-python-headless==4.2.0.34
 opt-einsum==3.2.1
 pandas==1.0.4
 pathtools==0.1.2
-Pillow==7.1.2
+Pillow==9.0.1
 promise==2.3
 protobuf==3.12.2
 psutil==5.7.0
